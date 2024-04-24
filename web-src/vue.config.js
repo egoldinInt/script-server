@@ -5,6 +5,7 @@ module.exports = {
     publicPath: '',
 
     outputDir: '../web',
+    transpileDependencies: [],
 
     devServer: {
         proxy: {
