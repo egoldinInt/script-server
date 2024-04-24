@@ -56,7 +56,7 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:unit-ci": "vue-cli-service test:unit -b ChromeHeadless",
     "stryker": "stryker run tests/unit/stryker.conf.js"
