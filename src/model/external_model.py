@@ -133,5 +133,6 @@ def parse_external_schedule(external_schedule):
         'end_arg': external_schedule.get('endArg'),
         'repeat_unit': external_schedule.get('repeatUnit'),
         'repeat_period': external_schedule.get('repeatPeriod'),
-        'weekdays': external_schedule.get('weekDays')
+        'weekdays': external_schedule.get('weekDays'),
+        'execution_limit': external_schedule.get('executionLimit', 1)
     }
