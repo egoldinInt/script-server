@@ -62,7 +62,12 @@ class ScheduleService:
         self.scheduler = Scheduler()
 
         for job_path, job in jobs.items():
-            self.schedule_job(job, job_path)
+            # Autorun logic: if job.schedule has 'autorun' attribute and it's True, execute immediately
+            if hasattr(job.schedule, 'autorun') and job.schedule.autorun:
+                LOGGER.info(f"Autorun enabled for {job.get_log_name()}, executing immediately.")
+                self._execute_job(job, job_path)
+            else:
+                self.schedule_job(job, job_path)
 
     def create_job(self, script_name, parameter_values, incoming_schedule_config, user: User):
         if user is None:
@@ -84,7 +89,7 @@ class ScheduleService:
         if schedule_config.end_option == 'max_executions' and schedule_config.end_arg <= 0:
             raise InvalidScheduleException('Count should be greater than 0!')
 
-        if not execution_limit.isdigit() or int(execution_limit) not in range(1, 50):
+        if execution_limit not in range(1, 50):
             raise InvalidScheduleException('Execution limit must be an int between 1 to 50')
 
         id = self._id_generator.next_id()
