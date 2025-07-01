@@ -62,7 +62,12 @@ class ScheduleService:
         self.scheduler = Scheduler()
 
         for job_path, job in jobs.items():
-            self.schedule_job(job, job_path)
+            # Autorun logic: if job.schedule has 'autorun' attribute and it's True, execute immediately
+            if hasattr(job.schedule, 'autorun') and job.schedule.autorun:
+                LOGGER.info(f"Autorun enabled for {job.get_log_name()}, executing immediately.")
+                self._execute_job(job, job_path)
+            else:
+                self.schedule_job(job, job_path)
 
     def create_job(self, script_name, parameter_values, incoming_schedule_config, user: User):
         if user is None:
