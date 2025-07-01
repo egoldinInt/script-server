@@ -20,6 +20,12 @@
           </label>
         </p>
       </div>
+      <div class="autorun-checkbox-panel" style="margin-bottom: 12px;">
+        <label>
+          <input type="checkbox" v-model="autorun" />
+          <span>Autorun</span>
+        </label>
+      </div>
       <div v-if="oneTimeSchedule" class="one-time-schedule-panel">
         <DatePicker v-model="startDate" :show-header-in-modal="!mobileView" class="inline" label="Date"/>
         <TimePicker v-model="startTime" class="inline" label="Time" @error="checkErrors"/>
@@ -136,6 +142,7 @@ export default {
 
     return {
       oneTimeSchedule: true,
+      autorun: false,
       startDate: now,
       startTime: now.toTimeString().substr(0, 5),
       endOption: 'never',
@@ -208,7 +215,8 @@ export default {
         repeatUnit: this.repeatTimeUnit,
         repeatPeriod: this.repeatPeriod,
         executionLimit: this.executionLimit,
-        weekDays: weekDays
+        weekDays: weekDays,
+        autorun: this.autorun
       };
     },
 
