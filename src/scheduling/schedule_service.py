@@ -131,33 +131,11 @@ class ScheduleService:
         if schedule.end_option == 'end_datetime':
             if next_datetime > schedule.end_arg:
                 return
-
-        if self.job_limit_reached(job):
-            return
         
         LOGGER.info(
             'Scheduling ' + job.get_log_name() + ' at ' + next_datetime.astimezone(tz=None).strftime('%H:%M, %d %B %Y'))
 
         self.scheduler.schedule(next_datetime, self._execute_job, (job, job_path))
-
-    def job_limit_reached(self, job: SchedulingJob):
-        if not job.execution_limit:
-            return False
-
-        count = 0
-        limit = job.execution_limit
-        user = job.user
-        running = self._execution_service.get_running_executions()
-
-        for id in running:
-            config = self._execution_service.get_config(id, user)
-            count += 1 if config.name == job.script_name else 0
-            if count >= limit:
-                LOGGER.info(
-                    f"Execution limit ({limit}) for {job.script_name} has been reached. A new {job.script_name} won't be scheduled")
-                return True
-
-        return False
 
     def _execute_job(self, job: SchedulingJob, job_path):
         LOGGER.info('Executing ' + job.get_log_name())
