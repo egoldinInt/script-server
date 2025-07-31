@@ -46,10 +46,6 @@
           <TimePicker v-model="startTime" class="inline repeat-start-time schedule-repeat_col-3"
                       label="Time" @error="checkErrors"/>
         </div>
-        <div>
-          <span class="schedule-repeat_col-1">Instances</span>
-            <Textfield v-model="executionLimit" :config="repeatPeriodField" class="inline repeat-period-field schedule-repeat_col-2" @error="checkErrors" />
-        </div>
 
         <div>
           <span class="schedule-repeat_col-1">End:</span>
@@ -151,7 +147,6 @@ export default {
       id: null,
       repeatPeriod: 1,
       maxExecuteCount: 1,
-      executionLimit: 1,
       repeatTimeUnit: 'days',
       weekDays: [
         {'day': 'Monday', active: currentDay === 1},
@@ -276,7 +271,7 @@ export default {
   font-size: 16px;
   max-width: 320px;
   width: 100%;
-  height: 520px;
+  height: 480px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

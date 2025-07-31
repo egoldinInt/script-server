@@ -76,7 +76,6 @@ class ScheduleService:
         config_model = self._config_service.load_config_model(script_name, user, parameter_values)
         self.validate_script_config(config_model)
 
-        execution_limit = incoming_schedule_config.get('execution_limit', 1)
         schedule_config = read_schedule_config(incoming_schedule_config)
 
         if not schedule_config.repeatable and date_utils.is_past(schedule_config.start_datetime):
@@ -89,9 +88,6 @@ class ScheduleService:
         if schedule_config.end_option == 'max_executions' and schedule_config.end_arg <= 0:
             raise InvalidScheduleException('Count should be greater than 0!')
 
-        if execution_limit not in range(1, 50):
-            raise InvalidScheduleException('Execution limit must be an int between 1 to 50')
-
         id = self._id_generator.next_id()
 
         normalized_values = {}
@@ -99,7 +95,7 @@ class ScheduleService:
             if value_wrapper.user_value is not None:
                 normalized_values[parameter_name] = value_wrapper.user_value
 
-        job = SchedulingJob(id, user, schedule_config, script_name, normalized_values, int(execution_limit))
+        job = SchedulingJob(id, user, schedule_config, script_name, normalized_values)
 
         job_path = self.save_job(job)
 
