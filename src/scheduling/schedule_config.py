@@ -58,6 +58,11 @@ def read_repeatable_flag(incoming_schedule_config):
         raise InvalidScheduleException('Missing "repeatable" field')
     return repeatable
 
+def read_autorun_flag(incoming_schedule_config):
+    autorun = model_helper.read_bool_from_config('autorun', incoming_schedule_config)
+    if autorun is None:
+        raise InvalidScheduleException('Missing "autorun" field')
+    return autorun
 
 def read_weekdays(incoming_schedule_config):
     weekdays = model_helper.read_list(incoming_schedule_config, 'weekdays')
@@ -72,9 +77,10 @@ def read_weekdays(incoming_schedule_config):
 
 def read_schedule_config(incoming_schedule_config):
     repeatable = read_repeatable_flag(incoming_schedule_config)
+    autorun = read_autorun_flag(incoming_schedule_config)
     start_datetime = _read_datetime(incoming_schedule_config, 'start_datetime')
 
-    prepared_schedule_config = ScheduleConfig(repeatable, start_datetime)
+    prepared_schedule_config = ScheduleConfig(repeatable, start_datetime, autorun)
     if repeatable:
 
         prepared_schedule_config.executions_count = model_helper.read_int_from_config('executions_count', incoming_schedule_config, default=0)
@@ -92,8 +98,9 @@ def read_schedule_config(incoming_schedule_config):
 
 class ScheduleConfig:
 
-    def __init__(self, repeatable, start_datetime) -> None:
+    def __init__(self, repeatable, start_datetime, autorun: bool = False) -> None:
         self.repeatable = repeatable
+        self.autorun = autorun
         self.start_datetime = start_datetime  # type: datetime
         self.end_option = None
         self.end_arg = None
@@ -105,6 +112,7 @@ class ScheduleConfig:
     def as_serializable_dict(self):
         result = {
             'repeatable': self.repeatable,
+            'autorun': self.autorun,
             'start_datetime': date_utils.to_iso_string(self.start_datetime)
         }
 
