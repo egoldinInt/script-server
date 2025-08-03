@@ -61,7 +61,7 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
-
+conf/schedules
 conf/runners
 conf/theme
 conf/conf.json
