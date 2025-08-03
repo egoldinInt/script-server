@@ -116,6 +116,11 @@ class ScheduleService:
     def schedule_job(self, job: SchedulingJob, job_path):
         schedule = job.schedule
 
+        if schedule.autorun:
+            LOGGER.info('Scheduling ' + job.get_log_name() + ' for immediate execution')
+            self._execute_job(job, job_path)
+            return
+            
         if not schedule.repeatable and date_utils.is_past(schedule.start_datetime):
             return
         
@@ -159,8 +164,12 @@ class ScheduleService:
 
             if job.schedule.repeatable:
                 job.schedule.executions_count += 1
-
                 self.save_job(job)
+                
+            if job.schedule.autorun:
+                # Automatically remove job's autorun flag after execution
+                LOGGER.info('Job ' + job.get_log_name() + ' is autorun, removing flag')
+                job.schedule.autorun = False
 
         except:
             LOGGER.exception('Failed to execute ' + job.get_log_name())

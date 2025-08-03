@@ -128,6 +128,7 @@ def server_conf_to_external(server_config, server_version):
 def parse_external_schedule(external_schedule):
     return {
         'repeatable': external_schedule.get('repeatable'),
+        'autorun': external_schedule.get('autorun', False),
         'start_datetime': external_schedule.get('startDatetime'),
         'end_option': external_schedule.get('endOption'),
         'end_arg': external_schedule.get('endArg'),

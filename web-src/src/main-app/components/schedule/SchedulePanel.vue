@@ -20,11 +20,13 @@
           </label>
         </p>
       </div>
-      <div class="autorun-checkbox-panel" style="margin-bottom: 12px;">
-        <label>
-          <input type="checkbox" v-model="autorun" />
-          <span>Autorun</span>
-        </label>
+      <div class="autorun-panel">
+        <p>
+          <label>
+            <input v-model="autorun" type="checkbox" class="filled-in" />
+            <span>Autorun</span>
+          </label>
+        </p>
       </div>
       <div v-if="oneTimeSchedule" class="one-time-schedule-panel">
         <DatePicker v-model="startDate" :show-header-in-modal="!mobileView" class="inline" label="Date"/>
@@ -46,7 +48,6 @@
           <TimePicker v-model="startTime" class="inline repeat-start-time schedule-repeat_col-3"
                       label="Time" @error="checkErrors"/>
         </div>
-
         <div>
           <span class="schedule-repeat_col-1">End:</span>
           <div class="schedule-type-panel">
@@ -138,7 +139,7 @@ export default {
 
     return {
       oneTimeSchedule: true,
-      autorun: false,
+      autorun: this.autorun,
       startDate: now,
       startTime: now.toTimeString().substr(0, 5),
       endOption: 'never',
@@ -184,7 +185,7 @@ export default {
     buildScheduleSetup() {
       const startDatetime = new Date(this.startDate);
       const [hours, minutes] = this.startTime.split(':');
-      startDatetime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+      startDatetime.setHours(parseInt(hours), parseInt(minutes)+1, 0, 0);
 
       let endOption = this.endOption;
       let endArg = null;
@@ -204,6 +205,7 @@ export default {
 
       return {
         repeatable: !this.oneTimeSchedule,
+        autorun: this.autorun,
         startDatetime: startDatetime,
         endOption: endOption,
         endArg: endArg,
@@ -333,6 +335,12 @@ export default {
   margin-top: 16px;
   margin-bottom: 0;
   margin-left: -3px;
+}
+
+.autorun-panel {
+  margin-top: 16px;
+  margin-bottom: 0;
+  margin-left: 0px;
 }
 
 .one-time-schedule-panel {
